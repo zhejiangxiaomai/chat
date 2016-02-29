@@ -23,6 +23,7 @@ class Slave{
   };
   //向某个slave发送消息
   void sendMessage( const string msg , const int id);
+  void sendFile(const string filename , const int id);
   void showFriendList();
   void requestFriendList();
   private:

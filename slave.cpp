@@ -27,6 +27,32 @@ void Slave::sendMessage(const string msg , const int id)
   }
 }
 
+void Slave::sendFile(const string filename , const int id)
+{
+  if(id <= this->friendlist.max_size()){
+    scoped_actor self;
+    auto people = caf::io::remote_actor(this->friendlist[id].slave_host_,
+                                        this->friendlist[id].port_);
+    ifstream in(filename);
+    if(!in.is_open())
+    {
+        cout<<"file open failed"<<endl;
+        return;
+    }
+    in.seekg(0,in.end);
+    int length = in.tellg();
+    in.seekg(0,in.beg);
+    char *buffer = new char[length];
+    in.read(buffer,length);
+    string file = buffer;
+    message_builder mb;
+
+    self->send(people,File::value,file,filename,this->username_, length);
+    }else{
+      cout<<"目前没有这个好友ID"<<endl;
+    }
+}
+
 void Slave::requestFriendList()
 {
   scoped_actor self;
@@ -72,9 +98,27 @@ void Slave::mainBehaveior(event_based_actor* self, Slave *client_self)
           //cout<<"friendlist update success"<<endl;
    }
    ,
-       [=](string message , string username){
+       [=](string message, string username){
          cout<<username<<":"<<message<<endl;
    },
+       [=](File, string file, string filename, string username, int length)
+       {
+         cout<<username<<"发来一个文件."<<endl;\
+         filename = filename+".bak";
+         ofstream out(filename);
+         if(!out.is_open())
+         {
+             cout<<"接受文件失败"<<endl;
+         }
+         char *buffer = const_cast<char *>(file.c_str());
+         out.write(buffer, length);
+         return caf::make_message(FileOK::value,filename);
+       }
+   ,
+       [=](FileOK, string filename){
+         cout<<filename<<"send finished\n";
+   }
+   ,
    others >> [=]() { cout << "受到未知消息" << endl; }
    );
    self->send(self, GetList::value);

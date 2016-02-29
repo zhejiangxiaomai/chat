@@ -7,6 +7,7 @@
 #include <boost/serialization/utility.hpp>
 #include <boost/serialization/vector.hpp>
 #include <pthread.h>
+#include <fstream>
 
 using namespace std;
 using namespace caf;
@@ -31,6 +32,8 @@ using GetList = caf::atom_constant<caf::atom("getList")>;
 using Heartbeat = caf::atom_constant<caf::atom("Heartbeat")>;
 using Updatelist = caf::atom_constant<caf::atom("Updatelist")>;
 using OkAtom = caf::atom_constant<caf::atom("ok")>;
+using File = caf::atom_constant<caf::atom("File")>;
+using FileOK = caf::atom_constant<caf::atom("Fileok")>;
 
 const auto kTimeout = 6;
 const auto kMaxTryTimes = 3;

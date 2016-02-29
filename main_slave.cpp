@@ -47,6 +47,14 @@ int main(int argc, char** argv)
         client.sendMessage(msg,id-1);
         break;
       case 3:
+        cout<<"输入文件名"<<endl;
+        cin>>msg;
+        cout<<"输入好友ID"<<endl;
+        cin>>id;
+        client.sendFile(msg, id-1);
+        //发送文件
+        break;
+      case 4:
        exit(0);
         break;
       default:
@@ -63,5 +71,6 @@ void menu()
 {
   cout<<"1. 查看在线好友"<<endl
       <<"2. 发送消息(格式为 消息 + 好友ID)"<<endl
-      <<"3. 下线"<<endl;
+      <<"3. 发送文件(格式为 文件名 +好友ID)"<<endl
+      <<"4. 下线"<<endl;
 }
