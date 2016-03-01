@@ -55,14 +55,15 @@ void Master::mainBehavior(event_based_actor* self , Master * server_self)
             for (auto iter = server_self->alivelist.begin(); iter != server_self->alivelist.end(); iter++)
             {
               (*iter).first++;
+              //cout<<(*iter).first<<endl;
               if((*iter).first >= kMaxTryTimes)
               {
                 server_self->alivelist.erase(iter);
               }
             }
           }
-          //30秒更新一次存活列表
-          self->delayed_send(self,std::chrono::seconds(5*kTimeout),Updatelist::value);
+          //3秒更新一次存活列表
+          self->delayed_send(self,std::chrono::seconds(kTimeout/2),Updatelist::value);
         },
         others >> [=]() { cout << "unknown message" << endl; }
         );
